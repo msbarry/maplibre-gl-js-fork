@@ -30,7 +30,6 @@ jobs:
       - run: mkdir build-info
       - name: Store build info
         run: |
-          cp package.json build-info/package.json
           echo "${{ github.event.pull_request.base.sha }}" > build-info/base_sha
           echo "${{ github.event.number }}" > build-info/pull_request_number
 
