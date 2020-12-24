@@ -31,16 +31,27 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           name: dist
           path: after
-          repo: maplibre/maplibre-gl-js
+      - name: Download branch build info
+        uses: dawidd6/action-download-artifact@v2
+        with:
+          github_token: "${{ secrets.GITHUB_TOKEN }}"
+          workflow: ${{ github.event.workflow_run.workflow_id }}
+          name: build-info
+          path: build-info
+      - name: Get PR number
+        id: pr_number
+        run: echo "::set-output name=pr_number::$(cat build-info/pull_request_number)"
+      - name: Get Base SHA
+        id: base_sha
+        run: echo "::set-output name=base_sha::$(cat build-info/base_sha)"
       - name: Download base artifact
         uses: dawidd6/action-download-artifact@v2
         with:
           github_token: "${{ secrets.GITHUB_TOKEN }}"
           workflow: build.yml
-          commit: ${{ github.event.workflow_run.pull_requests[0].base.sha }}
+          commit: ${{ steps.base_sha.outputs.base_sha }}
           name: dist
           path: before
-          repo: maplibre/maplibre-gl-js
       - run: yarn source-map-explorer before/mapbox-gl.js --gzip --json before.json
       - run: yarn source-map-explorer after/mapbox-gl.js --gzip --json after.json
       - name: Build bundle size report
