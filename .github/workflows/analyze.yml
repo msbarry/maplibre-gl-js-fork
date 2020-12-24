@@ -30,14 +30,12 @@ jobs:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           name: dist
           path: after
-          repo: maplibre/maplibre-gl-js
       - name: Download branch build info
         uses: dawidd6/action-download-artifact@v2
         with:
           workflow: ${{ github.event.workflow_run.workflow_id }}
           name: build-info
           path: build-info
-          repo: maplibre/maplibre-gl-js
       - name: Get build info
         id: build_info
         run: |
@@ -50,7 +48,6 @@ jobs:
           commit: ${{ steps.build_info.outputs.base_sha }}
           name: dist
           path: before
-          repo: maplibre/maplibre-gl-js
       - run: yarn source-map-explorer before/mapbox-gl.js --gzip --json before.json
       - run: yarn source-map-explorer after/mapbox-gl.js --gzip --json after.json
       - name: Build bundle size report
